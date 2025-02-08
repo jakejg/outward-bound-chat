@@ -8,8 +8,8 @@
     "node": ">=18"
   },
   "scripts": {
-    "build": "tsx",
-    "start": "dist/index.js",
+    "build": "tsc",
+    "start": "node dist/index.js",
     "dev": "tsx src/index.ts"
   },
   "dependencies": {
