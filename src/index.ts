@@ -26,6 +26,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Ping endpoint for wake-up calls
+app.get('/ping', (req, res) => {
+    res.status(200).json({ status: 'Server is awake' });
+});
+
 // Initialize Pinecone client
 async function initVectorStore() {
   const pineconeIndex = await pineconeInit();
