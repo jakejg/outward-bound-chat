@@ -22,7 +22,7 @@ export async function pineconeInit() {
         name: indexName,
         dimension: 1536, // Typical dimension for OpenAI embeddings
         metric: 'cosine',
-        cloudProvider: 'aws'
+        spec: { serverless: { cloud: 'aws', region: 'us-west-2' }}
       });
       console.log(`Index ${indexName} created successfully`);
     } else {
