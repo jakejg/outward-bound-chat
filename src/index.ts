@@ -108,12 +108,24 @@ async function initialize() {
         console.log('Initialization complete!');
     } catch (error) {
         console.error('Initialization failed:', error);
+        throw error; // Re-throw the error to be handled by the caller
     }
 }
 
 // Chat endpoint
 app.post('/chat', async (req, res) => {
     try {
+        if (!qaChain) {
+            console.log('QA Chain not initialized, attempting to reinitialize...');
+            try {
+                await initialize();
+                console.log('Reinitialization successful');
+            } catch (initError) {
+                console.error('Reinitialization failed:', initError);
+                return res.status(503).json({ error: 'Service initialization failed. Please try again in a moment.' });
+            }
+        }
+
         const question = req.body.question;
         if (!question) {
             return res.status(400).json({ error: 'Question is required' });
@@ -131,7 +143,15 @@ app.post('/chat', async (req, res) => {
 
 // Start the server
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    initialize();
-});
+
+// Only start the server after successful initialization
+initialize()
+    .then(() => {
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+    })
+    .catch((error) => {
+        console.error('Failed to start server:', error);
+        process.exit(1); // Exit if initialization fails
+    });
