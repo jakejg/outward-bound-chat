@@ -21,13 +21,13 @@ app.use(express.urlencoded({ extended: true }));
 
 // Debugging middleware
 app.use((req, res, next) => {
-  console.log('Request Headers:', req.headers);
   console.log('Request Body:', req.body);
   next();
 });
 
 // Ping endpoint for wake-up calls
 app.get('/ping', (req, res) => {
+    console.log("Ping")
     res.status(200).json({ status: 'Server is awake' });
 });
 
